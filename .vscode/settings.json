@@ -76,5 +76,6 @@
   "lldb.dereferencePointers": true,
   "lldb.consoleMode": "commands",
   "memory-view.showMemoryPanel": true,
-  "discord.enabled": true
+  "discord.enabled": true,
+  "cmake.sourceDirectory": "C:/Users/segel/vscode/DirectXBase/src"
 }
