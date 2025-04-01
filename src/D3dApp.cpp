@@ -10,10 +10,12 @@ D3DApp::~D3DApp()
 {
     md3dDevice->Release();
     md3dDeviceContext->Release();
-    mSwapChain->Release();
-    mDepthStencilBuffer->Release();
     mRenderTargetView->Release();
+    mSwapChain->Release();
     mDepthStencilView->Release();
+    mDepthStencilBuffer->Release();
+   
+    
 }
 
 /// @return 앱의 인스턴스 핸들 반환
@@ -41,7 +43,8 @@ int D3DApp::Run()
 
     mTimer.Reset();
 
-    ShowWindow(mhMainWnd, 0);
+    ShowWindow(mhMainWnd, SW_SHOWDEFAULT);
+    UpdateWindow(mhMainWnd);
 
     while (msg.message != WM_QUIT)
     {
@@ -66,6 +69,7 @@ int D3DApp::Run()
             }
         }
     }
+    return 0;
 }
 
 /// @brief 평균 FPS 계산 및 프레임 시간 계산
@@ -121,7 +125,7 @@ LRESULT CALLBACK D3DApp::MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPar
 
     /* 객체 포인터 유효시 호출 */
     if (pThis)
-        return pThis->MsgProc(hWnd, msg, wParam, lParam);
+        return pThis->MsgProcImpl(hWnd, msg, wParam, lParam);
 
     return DefWindowProcW(hWnd, msg, wParam, lParam);
 }
@@ -165,11 +169,13 @@ bool D3DApp::InitMainWindow()
     mhMainWnd = CreateWindowExW(0, mMainWndCaption.c_str(), mMainWndCaption.c_str(), WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
                                 CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, nullptr, nullptr, mhAppInst, nullptr);
 
-    if (!mhMainWnd)
+    if (mhMainWnd == nullptr)
     {
         MessageBoxW(mhMainWnd, L"CreateWindowExW failed!", L"ERROR", MB_ICONERROR);
         return false;
     }
+
+    return true;
 }
 
 /// @brief Direct3D 요소 초기화
@@ -236,11 +242,11 @@ bool D3DApp::InitDirect3D()
     depthStencilDesc.CPUAccessFlags = 0;
     depthStencilDesc.MiscFlags = 0;
 
-    if (!md3dDevice->CreateTexture2D(&depthStencilDesc, 0, &mDepthStencilBuffer))
+    if (FAILED(md3dDevice->CreateTexture2D(&depthStencilDesc, nullptr, &mDepthStencilBuffer)))
     {
         return false;
     }
-    if (!md3dDevice->CreateDepthStencilView(mDepthStencilBuffer, 0, &mDepthStencilView))
+    if (FAILED(md3dDevice->CreateDepthStencilView(mDepthStencilBuffer, 0, &mDepthStencilView)))
     {
         return false;
     }
@@ -255,6 +261,8 @@ bool D3DApp::InitDirect3D()
     mScreenViewport.MinDepth = 0.0f;
 
     md3dDeviceContext->RSSetViewports(1, &mScreenViewport);
+
+    return true;
 }
 
 void D3DApp::OnResize()

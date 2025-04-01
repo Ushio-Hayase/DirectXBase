@@ -2,49 +2,24 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug with CodeLLDB",
-            "type": "lldb",
-            "request": "launch",
-            "program": "${fileDirname}\\build\\${fileBasenameNoExtension}.exe",
-            "args": [],
-            "cwd": "${workspaceFolder}",
-            "terminal": "integrated",
-            "preLaunchTask": "C/C++: clang++.exe build active file"
-        },
-        {
-            "name": "(Windows) Launch",
+            "name": "(lldb) Launch",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${fileDirname}\\build\\${fileBasenameNoExtension}.exe",
+            // Resolved by CMake Tools:
+            "program": "${command:cmake.launchTargetPath}",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [],
-            "console": "externalTerminal",
-        },
-        {
-            "name": "C/C++: clang++.exe build and debug active file",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${fileDirname}\\build\\${fileBasenameNoExtension}.exe",
-            "args": [
-                "-g",
-                "${file}"
-            ],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": true,
-            "MIMode": "lldb",
-            "miDebuggerPath": "C:\\LLVM\\bin\\lldb.exe",
-            "setupCommands": [
+            "environment": [
                 {
-                    "description": "Enable pretty-printing for lldb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
+                    // add the directory where our target was built to the PATHs
+                    // it gets resolved by CMake Tools:
+                    "name": "PATH",
+                    "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}"
+                },
             ],
-            "preLaunchTask": "C/C++: clang++.exe build active file",
-        }
+            
+            "console": "integratedTerminal"
+        },
     ]
 }

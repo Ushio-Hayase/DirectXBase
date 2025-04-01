@@ -1,8 +1,3 @@
-cmake_minimum_required(VERSION 3.20)
-project(DirectXBase)
-
-
-
 if(NOT WIN32)
     message(FATAL_ERROR "This project requires Windows and Windows SDK")
 endif()
@@ -11,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-include_directories(DirectXBase PUBLIC "../Include")
+
 
 add_executable(DirectXBase WIN32 main.cpp D3DAppChap4.cpp D3dApp.cpp GameTimer.cpp)
 
